@@ -1,97 +1,86 @@
-# Victron VE.Direct for Home Assistant
+<p align="center">
+  <img src="brands/vedirect/icon@2x.png" width="140" alt="VE.Direct integration icon">
+</p>
 
-A Home Assistant custom integration for Victron Energy devices with a
-VE.Direct port: **SmartSolar / BlueSolar MPPT** chargers, **BMV / SmartShunt**
-battery monitors, **Phoenix** inverters and chargers, and the **Smart
-BuckBoost** DC/DC converter.
+<h1 align="center">Victron VE.Direct for Home Assistant</h1>
 
-Implements the VE.Direct TEXT protocol as specified in
-[VE.Direct-Protocol-3.34](https://www.victronenergy.com/upload/documents/VE.Direct-Protocol-3.34.pdf).
-Read-only: nothing is ever written to the device.
+<p align="center">
+See your Victron solar charger, battery monitor or inverter live in Home Assistant —
+locally, over the VE.Direct cable, with no cloud and no polling.
+</p>
 
-## Features
+---
 
-- **Local push** — the device broadcasts every second over the serial cable;
-  no polling, no cloud.
-- **Multiple devices** — each cable is its own config entry with its own
-  connection. Two (or ten) VE.Direct USB cables on one Home Assistant work
-  independently; uniqueness is enforced on the device serial number
-  (`SER#`), with the stable `/dev/serial/by-id/…` path as fallback for BMVs,
-  which don't broadcast a serial number.
-- **USB discovery** — genuine VE.Direct USB cables (FTDI, `VE Direct cable`)
-  are auto-discovered.
-- **Dynamic entities** — entities are created for exactly the fields your
-  device broadcasts. An MPPT gets solar yield entities, a SmartShunt gets
-  battery history, an inverter gets AC output.
-- **Robust framing** — a byte-level state machine with checksum verification
-  and HEX-frame demultiplexing; survives checksum bytes that masquerade as
-  newlines, mid-stream connects, garbage bursts, cable unplug/replug and
-  device reboots (automatic reconnect with backoff, entities go unavailable
-  meanwhile).
-- **Energy dashboard ready** — solar yield and BMV charged/discharged energy
-  are `total_increasing` kWh sensors.
+Plug a [VE.Direct USB cable](https://www.victronenergy.com/accessories/ve-direct-to-usb-interface)
+into your Home Assistant machine and this integration turns the device's
+once-per-second broadcast into entities: battery voltage and current, solar
+yield, state of charge, charger state, alarms and more.
+
+Any device that speaks the VE.Direct TEXT protocol works — this integration
+implements [VE.Direct protocol 3.34](https://www.victronenergy.com/upload/documents/VE.Direct-Protocol-3.34.pdf).
+Entities are created from what your device actually broadcasts, so new
+fields from firmware updates appear automatically.
 
 ## Installation
 
-### HACS (recommended)
+**With HACS (recommended):**
 
-1. HACS → Integrations → ⋮ → *Custom repositories* → add this repository as
-   type *Integration*.
-2. Install **Victron VE.Direct** and restart Home Assistant.
+1. In HACS, open the ⋮ menu → **Custom repositories** and add
+   `https://github.com/niecore/ha-vedirect` as type *Integration*.
+2. Search for **Victron VE.Direct**, install it, and restart Home Assistant.
 
-### Manual
+**Manual:** copy the `custom_components/vedirect` folder into your Home
+Assistant `config/custom_components/` folder and restart.
 
-Copy `custom_components/vedirect/` into your Home Assistant `config/custom_components/`
-directory and restart.
+## Setup
 
-## Configuration
+If you use the official Victron USB cable, Home Assistant will usually
+**discover it automatically** — just confirm the notification.
 
-*Settings → Devices & Services → Add Integration → Victron VE.Direct.*
+Otherwise: **Settings → Devices & Services → Add Integration → Victron
+VE.Direct**, then pick your serial port from the list. Done — your device
+shows up with its model name, serial number and firmware version.
 
-Pick the serial port, or type a path/URL. When more than one cable is
-connected, prefer the stable `/dev/serial/by-id/…` paths — `/dev/ttyUSB0`
-and `/dev/ttyUSB1` can swap after a reboot (the integration resolves
-`by-id` paths automatically when possible). Repeat *Add Integration* once
-per cable.
+### More than one device?
 
-Because the transport is [serialx](https://pypi.org/project/serialx/), the
-port can also be a network URL (e.g. an ESPHome/ser2net serial proxy):
-`socket://192.168.1.50:6638`.
+Just repeat *Add Integration* for each cable. Every cable gets its own
+device with its own entities. Tip: pick the `/dev/serial/by-id/…` entries
+from the port list (the ones with `VictronEnergy` in the name) — unlike
+`/dev/ttyUSB0`, they never swap around after a reboot.
 
-### Options
+## Using it
 
-- **Update interval** (default 5 s): the device broadcasts at 1 Hz; this
-  throttles how often states are written, keeping the recorder database sane.
-
-## Entities
-
-| Device | Examples |
-|---|---|
-| MPPT charger | battery voltage/current, panel voltage/power, charger state, MPPT mode, yield today/total, max power, error, off reason |
-| BMV / SmartShunt | voltage, current, power, state of charge, time to go, consumed Ah, starter/mid-point voltage, alarm, history (H1–H18, mostly disabled by default) |
-| Phoenix inverter | AC output voltage/current/apparent power, device mode, state, warning/alarm reason |
-| Phoenix charger / BuckBoost | per-output voltage & current, DC input voltage/current/power, state, error |
-
-Identification fields (`PID`, `SER#`, `FW`/`FWE`) populate the device
-registry (model, serial number, firmware version) instead of being entities.
+- **Energy dashboard:** add *Yield today* (MPPT) or *Charged/Discharged
+  energy* (BMV/SmartShunt) as solar production / battery sensors.
+- **Update speed:** the device broadcasts every second; by default Home
+  Assistant records a new state every 5 seconds. Change this per device
+  under the integration's **Configure** button (1–60 s).
+- **Extra history sensors** (deepest discharge, charge cycles, min/max
+  voltages, …) exist but are disabled by default — enable them on the
+  device page if you want them.
 
 ## Troubleshooting
 
-- **No data with a VE.Direct-to-RS232 interface**: the isolated side is
-  powered from DTR/RTS; both are asserted on open by the serial backend, but
-  some USB-RS232 adapters need a moment before the first frame arrives.
-- **`cannot_connect` during setup**: check that nothing else (VictronConnect,
-  ser2net) holds the port, and that the cable is a data cable.
-- Diagnostics (device page → *Download diagnostics*) include the merged
-  decoded data and good/bad frame counters.
+- **Nothing found during setup** — make sure no other software
+  (VictronConnect, Venus OS, ser2net) has the port open, and that your
+  cable is a genuine data cable.
+- **Entities show "unavailable"** — the cable was unplugged or the device
+  powered off; the integration reconnects automatically as soon as data
+  returns.
+- **Still stuck?** Download diagnostics from the device page (it contains
+  the decoded data and frame counters) and
+  [open an issue](https://github.com/niecore/ha-vedirect/issues).
 
-## Development
+## For developers
 
-The protocol implementation lives in `custom_components/vedirect/vedirect_x/`
-as a vendored, Home-Assistant-free library (parser, field registry, async
-client). Run its tests with:
+The protocol implementation (VE.Direct TEXT protocol 3.34: byte-level
+parser with checksum verification, HEX-frame demux, field registry) lives
+in `custom_components/vedirect/vedirect_x/` as a standalone,
+Home-Assistant-free library. Run its test suite with:
 
 ```bash
 pip install pytest serialx
 pytest tests
 ```
+
+Read-only by design: nothing is ever written to the device.
