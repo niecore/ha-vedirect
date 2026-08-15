@@ -1,0 +1,5 @@
+{
+  "name": "Victron VE.Direct",
+  "content_in_root": false,
+  "homeassistant": "2024.12.0"
+}

@@ -1,0 +1,183 @@
+{
+  "config": {
+    "flow_title": "VE.Direct device ({device})",
+    "step": {
+      "user": {
+        "title": "Connect a VE.Direct device",
+        "description": "Select the serial port the VE.Direct cable is connected to. A stable `/dev/serial/by-id/…` path is recommended when using more than one cable.",
+        "data": {
+          "device_path": "Serial port"
+        }
+      },
+      "usb_confirm": {
+        "title": "VE.Direct cable discovered",
+        "description": "Add the Victron device connected on {device}?"
+      }
+    },
+    "error": {
+      "cannot_connect": "No valid VE.Direct data received on this port. Check the cable and that no other software is using the port."
+    },
+    "abort": {
+      "already_configured": "This device or port is already configured",
+      "cannot_connect": "No valid VE.Direct data received on this port"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "VE.Direct options",
+        "data": {
+          "update_interval": "Update interval"
+        },
+        "data_description": {
+          "update_interval": "The device broadcasts every second; this limits how often Home Assistant records a new state."
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "alarm": { "name": "Alarm" },
+      "relay_state": { "name": "Relay" },
+      "load_output": { "name": "Load output" }
+    },
+    "sensor": {
+      "battery_voltage": { "name": "Battery voltage" },
+      "battery_voltage_2": { "name": "Battery voltage 2" },
+      "battery_voltage_3": { "name": "Battery voltage 3" },
+      "starter_voltage": { "name": "Starter battery voltage" },
+      "mid_point_voltage": { "name": "Mid-point voltage" },
+      "mid_point_deviation": { "name": "Mid-point deviation" },
+      "battery_current": { "name": "Battery current" },
+      "battery_current_2": { "name": "Battery current 2" },
+      "battery_current_3": { "name": "Battery current 3" },
+      "battery_temperature": { "name": "Battery temperature" },
+      "instantaneous_power": { "name": "Power" },
+      "state_of_charge": { "name": "State of charge" },
+      "time_to_go": { "name": "Time to go" },
+      "consumed_amp_hours": { "name": "Consumed Ah" },
+      "load_current": { "name": "Load current" },
+      "panel_voltage": { "name": "Panel voltage" },
+      "panel_power": { "name": "Panel power" },
+      "charger_state": {
+        "name": "State",
+        "state": {
+          "off": "Off",
+          "low_power": "Low power",
+          "fault": "Fault",
+          "bulk": "Bulk",
+          "absorption": "Absorption",
+          "float": "Float",
+          "storage": "Storage",
+          "equalize_manual": "Equalize (manual)",
+          "inverting": "Inverting",
+          "power_supply": "Power supply",
+          "starting_up": "Starting up",
+          "repeated_absorption": "Repeated absorption",
+          "auto_equalize": "Auto equalize / Recondition",
+          "battery_safe": "BatterySafe",
+          "external_control": "External control"
+        }
+      },
+      "tracker_mode": {
+        "name": "MPPT tracker mode",
+        "state": {
+          "off": "Off",
+          "voltage_or_current_limited": "Voltage or current limited",
+          "mpp_tracker_active": "MPP tracker active"
+        }
+      },
+      "device_mode": {
+        "name": "Device mode",
+        "state": {
+          "charger": "Charger",
+          "inverter": "Inverter",
+          "off": "Off",
+          "eco": "Eco",
+          "hibernate": "Hibernate"
+        }
+      },
+      "monitor_mode": {
+        "name": "Monitor mode",
+        "state": {
+          "solar_charger": "Solar charger",
+          "wind_turbine": "Wind turbine",
+          "shaft_generator": "Shaft generator",
+          "alternator": "Alternator",
+          "fuel_cell": "Fuel cell",
+          "water_generator": "Water generator",
+          "dc_dc_charger": "DC/DC charger",
+          "ac_charger": "AC charger",
+          "generic_source": "Generic source",
+          "battery_monitor": "Battery monitor",
+          "generic_load": "Generic load",
+          "electric_drive": "Electric drive",
+          "fridge": "Fridge",
+          "water_pump": "Water pump",
+          "bilge_pump": "Bilge pump",
+          "dc_system": "DC system",
+          "inverter": "Inverter",
+          "water_heater": "Water heater"
+        }
+      },
+      "error": {
+        "name": "Error",
+        "state": {
+          "no_error": "No error",
+          "battery_voltage_too_high": "Battery voltage too high",
+          "charger_temperature_too_high": "Charger temperature too high",
+          "charger_over_current": "Charger over-current",
+          "charger_current_polarity_reversed": "Charger current reversed",
+          "bulk_time_limit_exceeded": "Bulk time limit exceeded",
+          "current_sensor_issue": "Current sensor issue",
+          "terminal_temperature_too_high": "Terminals overheated",
+          "converter_issue": "Converter issue",
+          "input_voltage_too_high": "Input voltage too high",
+          "input_current_too_high": "Input current too high",
+          "input_shutdown_excessive_battery_voltage": "Input shutdown (battery voltage)",
+          "input_shutdown_current_flow": "Input shutdown (current flow)",
+          "lost_communication": "Lost communication",
+          "synchronised_charging_config_issue": "Synchronised charging configuration issue",
+          "bms_connection_lost": "BMS connection lost",
+          "network_misconfigured": "Network misconfigured",
+          "factory_calibration_lost": "Factory calibration data lost",
+          "invalid_firmware": "Invalid firmware",
+          "user_settings_invalid": "User settings invalid"
+        }
+      },
+      "off_reason": { "name": "Off reason" },
+      "alarm_reason": { "name": "Alarm reason" },
+      "warning_reason": { "name": "Warning reason" },
+      "yield_total": { "name": "Yield total" },
+      "yield_today": { "name": "Yield today" },
+      "yield_yesterday": { "name": "Yield yesterday" },
+      "max_power_today": { "name": "Max power today" },
+      "max_power_yesterday": { "name": "Max power yesterday" },
+      "day_sequence_number": { "name": "Day sequence number" },
+      "discharged_energy": { "name": "Discharged energy" },
+      "charged_energy": { "name": "Charged energy" },
+      "deepest_discharge": { "name": "Deepest discharge" },
+      "last_discharge": { "name": "Last discharge" },
+      "average_discharge": { "name": "Average discharge" },
+      "charge_cycles": { "name": "Charge cycles" },
+      "full_discharges": { "name": "Full discharges" },
+      "total_amp_hours_drawn": { "name": "Total Ah drawn" },
+      "min_battery_voltage": { "name": "Minimum battery voltage" },
+      "max_battery_voltage": { "name": "Maximum battery voltage" },
+      "min_starter_voltage": { "name": "Minimum starter voltage" },
+      "max_starter_voltage": { "name": "Maximum starter voltage" },
+      "time_since_last_full_charge": { "name": "Time since last full charge" },
+      "automatic_synchronizations": { "name": "Automatic synchronizations" },
+      "low_voltage_alarms": { "name": "Low voltage alarms" },
+      "high_voltage_alarms": { "name": "High voltage alarms" },
+      "low_starter_voltage_alarms": { "name": "Low starter voltage alarms" },
+      "high_starter_voltage_alarms": { "name": "High starter voltage alarms" },
+      "ac_output_voltage": { "name": "AC output voltage" },
+      "ac_output_current": { "name": "AC output current" },
+      "ac_output_apparent_power": { "name": "AC output apparent power" },
+      "dc_input_voltage": { "name": "DC input voltage" },
+      "dc_input_current": { "name": "DC input current" },
+      "dc_input_power": { "name": "DC input power" }
+    }
+  }
+}
