@@ -76,9 +76,9 @@ async def probe(device_path: str) -> dict[str, Any]:
 
 def _list_ports() -> list[str]:
     """Enumerate serial ports, blocking; run in executor."""
-    from serial.tools import list_ports
+    from serialx.tools import list_ports
 
-    return [port.device for port in list_ports.comports(include_links=True)]
+    return [port.device for port in list_ports.comports()]
 
 
 class VEDirectConfigFlow(ConfigFlow, domain=DOMAIN):

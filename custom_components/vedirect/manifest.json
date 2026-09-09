@@ -8,7 +8,7 @@
   "integration_type": "device",
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/niecore/ha-vedirect/issues",
-  "requirements": ["serialx==1.8.2", "pyserial==3.5"],
+  "requirements": ["serialx"],
   "usb": [
     {
       "vid": "0403",
@@ -16,5 +16,5 @@
       "description": "*ve direct*"
     }
   ],
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
